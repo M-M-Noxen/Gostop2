@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - CardPlacePlayer1
+  - CardPlacePlayer2
+  - CardPlaceOther
+  - Card
+  - NotSelectable1
+  - NotSelectable2
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - FirstFloor
+  - SecondFloor
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: FirstFloor
+    uniqueID: 132604665
+    locked: 0
+  - name: SecondFloor
+    uniqueID: 707354171
+    locked: 0
