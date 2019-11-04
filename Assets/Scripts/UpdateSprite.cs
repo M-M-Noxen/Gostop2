@@ -9,6 +9,7 @@ public class UpdateSprite : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Selectable selectable;
     private GoStop gostop;
+    private UserInput userInput;
    
 
     // Start is called before the first frame update
