@@ -6,9 +6,7 @@ using UnityEngine;
 public class UserInput : MonoBehaviour
 {
     public GameObject slot1;
-
     private GoStop gostop;
-    private Selectable selectable;
 
     RaycastHit2D[] hits;
     public bool CardSelected = false;
@@ -22,12 +20,12 @@ public class UserInput : MonoBehaviour
     void Start()
     {
         gostop = FindObjectOfType<GoStop>();
-        slot1 = this.gameObject;
     }
 
     // Update is called once per frame
     void Update()
-    {        
+    {
+        /*MouseClickCheck();*/
         GetMouseClick();
         CardAction();
         TurnCounter();
@@ -48,8 +46,7 @@ public class UserInput : MonoBehaviour
                 {
                         if (hit.collider.CompareTag("Card") )
                         {
-                            Debug.Log("Clicked on Card");
-                            Card(hit.collider.gameObject);
+                            Debug.Log("Clicked on Card");                            
                             CardSelected = true;                          
                         }
 
@@ -73,19 +70,18 @@ public class UserInput : MonoBehaviour
         }
     }
 
-    void Card(GameObject selected)
+    /*void MouseClickCheck()
     {
-        if(slot1 = this.gameObject)
+        if (Input.GetMouseButtonDown(0))
         {
-            slot1 = selected; 
+            Debug.Log("mouse is clicked");
         }
-    }
+    }*/
 
     void CardAction()
     {
         if (CardSelected == true & Player1CardSelected == true)
         {
-
             Debug.Log("No problem");// 조건 실행문으로 교체
             PlayerTurn = 2;
             CardSelected = !CardSelected;
