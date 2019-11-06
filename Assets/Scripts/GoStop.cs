@@ -160,7 +160,7 @@ public class GoStop : MonoBehaviour
         {
             foreach (string card in OtherCards[i])
             {
-                GameObject newCard = Instantiate(cardPrefabs, new Vector3(OtherPlace[i].transform.position.x, OtherPlace[i].transform.position.y, OtherPlace[i].transform.position.z), Quaternion.identity, OtherPlace[i - 20].transform);
+                GameObject newCard = Instantiate(cardPrefabs, new Vector3(OtherPlace[i].transform.position.x, OtherPlace[i].transform.position.y, OtherPlace[i].transform.position.z), Quaternion.identity, OtherPlace[i].transform);
                 newCard.name = card;
                 newCard.GetComponent<Selectable>().faceUp = true;
             }
