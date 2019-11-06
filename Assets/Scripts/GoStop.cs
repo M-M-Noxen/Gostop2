@@ -14,6 +14,7 @@ public class GoStop : MonoBehaviour
     public static string[] month = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" };
     public static string[] value = new string[] { "a", "b", "c", "d", };
     public List<string>[] PlayerCards;
+    public List<string>[] OtherCards;
 
     private List<string> MyCard0 = new List<string>();
     private List<string> MyCard1 = new List<string>();
@@ -37,6 +38,7 @@ public class GoStop : MonoBehaviour
     private List<string> YourCard8 = new List<string>();
     private List<string> YourCard9 = new List<string>();
 
+    private List<string> OtherCard0 = new List<string>();
     private List<string> OtherCard1 = new List<string>();
     private List<string> OtherCard2 = new List<string>();
     private List<string> OtherCard3 = new List<string>();
@@ -45,13 +47,20 @@ public class GoStop : MonoBehaviour
     private List<string> OtherCard6 = new List<string>();
     private List<string> OtherCard7 = new List<string>();
     private List<string> OtherCard8 = new List<string>();
+    private List<string> OtherCard9 = new List<string>();
+    private List<string> OtherCard10 = new List<string>();
+    private List<string> OtherCard11 = new List<string>();
+
+
+
 
 
     public List<string> deck;
     // Start is called before the first frame update
     void Start()
     {
-        PlayerCards = new List<string>[] { MyCard0, MyCard1, MyCard2, MyCard3, MyCard4, MyCard5, MyCard6, MyCard7, MyCard8, MyCard9, YourCard0, YourCard1, YourCard2, YourCard3, YourCard4, YourCard5, YourCard6, YourCard7, YourCard8, YourCard9 , OtherCard1, OtherCard2, OtherCard3, OtherCard4, OtherCard5, OtherCard6, OtherCard7, OtherCard8 };
+        PlayerCards = new List<string>[] { MyCard0, MyCard1, MyCard2, MyCard3, MyCard4, MyCard5, MyCard6, MyCard7, MyCard8, MyCard9, YourCard0, YourCard1, YourCard2, YourCard3, YourCard4, YourCard5, YourCard6, YourCard7, YourCard8, YourCard9};
+        OtherCards = new List<string>[] { OtherCard0, OtherCard1, OtherCard2, OtherCard3, OtherCard4, OtherCard5, OtherCard6, OtherCard7, OtherCard8, OtherCard9, OtherCard10, OtherCard11 };
 
         PlayCards();
     }
@@ -145,28 +154,32 @@ public class GoStop : MonoBehaviour
                     newCard.GetComponent<Selectable>().faceUp = true;
                 }
             }
-
-            else
+        //Debug.Log("i=" + i);
+        }
+        for(int i=0; i<8; i++)
+        {
+            foreach (string card in OtherCards[i])
             {
-                foreach (string card in PlayerCards[i])
-                {
-                    GameObject newCard = Instantiate(cardPrefabs, new Vector3(OtherPlace[i - 20].transform.position.x, OtherPlace[i - 20].transform.position.y, OtherPlace[i - 20].transform.position.z ), Quaternion.identity, OtherPlace[i - 20].transform);
-                    newCard.name = card;
-                    newCard.GetComponent<Selectable>().faceUp = true;
-                }
+                GameObject newCard = Instantiate(cardPrefabs, new Vector3(OtherPlace[i].transform.position.x, OtherPlace[i].transform.position.y, OtherPlace[i].transform.position.z), Quaternion.identity, OtherPlace[i - 20].transform);
+                newCard.name = card;
+                newCard.GetComponent<Selectable>().faceUp = true;
             }
-
-            //Debug.Log("i=" + i);
         }
     }
 
     void GoStopSort()
     {
-        for(int i =0; i<28; i++)
+        for(int i =0; i<20; i++)
         {
                 PlayerCards[i].Add(deck.Last<string>());
                 deck.RemoveAt(deck.Count - 1);
 
+        }
+
+        for(int i=0; i<8; i++)
+        {
+            OtherCards[i].Add(deck.Last<string>());
+            deck.RemoveAt(deck.Count - 1);
         }
     }
 }
