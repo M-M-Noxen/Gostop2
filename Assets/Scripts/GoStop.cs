@@ -82,7 +82,7 @@ public class GoStop : MonoBehaviour
         {
             foreach (string v in value)
             {
-                newDeck.Add(m + v);
+                newDeck.Add(v + m);
             }
         }
         return newDeck;
