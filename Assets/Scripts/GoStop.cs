@@ -75,11 +75,12 @@ public class GoStop : MonoBehaviour
     {
         Player1Cards = new List<string>[] { MyCard0, MyCard1, MyCard2, MyCard3, MyCard4, MyCard5, MyCard6, MyCard7, MyCard8, MyCard9};
         Player2Cards = new List<string>[] { YourCard0, YourCard1, YourCard2, YourCard3, YourCard4, YourCard5, YourCard6, YourCard7, YourCard8, YourCard9 };
-       FloorCards = new List<string>[] { FloorCard0, FloorCard1, FloorCard2, FloorCard3, FloorCard4, FloorCard5, FloorCard6, FloorCard7, FloorCard8, FloorCard9, FloorCard10, FloorCard11 };
+        FloorCards = new List<string>[] { FloorCard0, FloorCard1, FloorCard2, FloorCard3, FloorCard4, FloorCard5, FloorCard6, FloorCard7, FloorCard8, FloorCard9, FloorCard10, FloorCard11 };
         //PlayerCards = new List<string>[] { "MyCard0", "MyCard1", "MyCard2", "MyCard3", "MyCard4", "MyCard5", "MyCard6", "MyCard7", "MyCard8", "MyCard9", "YourCard0", "YourCard1", "YourCard2", "YourCard3", "YourCard4", "YourCard5", "YourCard6", "YourCard7", "YourCard8", "YourCard9"};
         //->foreach 구문과 List<string>[] 의 관계, 왜 List 와 Array 로는 안되는지 생각해보자
 
         PlayCards();
+        Check();
     }
 
     // Update is called once per frame
@@ -258,11 +259,10 @@ public class GoStop : MonoBehaviour
 
     void Check()
     {
-        foreach (int m in Player1CardsMonth)
+        foreach (int m in FloorCardsMonth)
         {
             print("Check: " + m);
         }
-        print("Check2; " + monthdeck.Last<int>());
     }
 
 }

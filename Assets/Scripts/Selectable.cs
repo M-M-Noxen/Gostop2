@@ -44,6 +44,10 @@ public class Selectable : MonoBehaviour
             }
             if (monthString == "3")
             {
+                month = 3;
+            }
+            if (monthString == "4")
+            {
                 month = 4;
             }
             if (monthString == "5")

@@ -27,13 +27,14 @@ public class UserInput : MonoBehaviour
     void Start()
     {
         slot1 = this.gameObject;
+        Check();
     }
 
     // Update is called once per frame
     void Update()
     {        
         GetMouseClick();
-        CardCheck();
+        Check();
         CardAction();
         TurnCounter();
     }
@@ -65,7 +66,7 @@ public class UserInput : MonoBehaviour
                         }
 
 
-                        else if (hit.collider.CompareTag("CardPlacePlayer2"))
+                        if (hit.collider.CompareTag("CardPlacePlayer2"))
                         {
                             Debug.Log("Clicked on Player 2");
                             Player2CardSelected = true;
@@ -88,35 +89,40 @@ public class UserInput : MonoBehaviour
 
     void CardAction()
     {
-        if(CardSelected == true)
-        {
-            CardSelected = !CardSelected;
-        }
-
         if (Player1CardSelected == true)
-        {            
+        {
+            if (CardSelected == true)
+            {
+                int MonthCount = 0;
+                int MonthPlace = 0;
+                Selectable s1 = slot1.GetComponent<Selectable>();
+                GameObject[] FloorPlaceUserinput = gostop.FloorPlace;
+                
+                foreach (int m in gostop.FloorCardsMonth)
+                {
+                    if (s1.month == m)
+                    {
+                        MonthCount++;
+                        if (MonthCount >= 2)
+                        {
+                            print("What will you choose?");
+                        }
+                        slot1.transform.position = new Vector3(FloorPlaceUserinput[MonthPlace].transform.position.x + 1f, FloorPlaceUserinput[MonthPlace].transform.position.y, FloorPlaceUserinput[MonthPlace].transform.position.z + 0.5f);
+                        //print("You have " + MonthCount + " " + m + "Month");
+                    }
+                    else
+                    {
+                        //print("Not Found");
+                    }
+
+                    MonthPlace++;
+                }
+            }
             Debug.Log("No problem");// 조건 실행문으로 교체
             PlayerTurn = 2;
             Player1CardSelected = !Player1CardSelected;
         }
-            //카드가 선택되면 OtherPlace 중에서 월(month)을 비교해본다.
-               //if (Other Place Card Month = Selected Card Month) 
-                    //카드들을 충돌 시키고 덱에서 카드 한장을 뒤집는다.
-                        // if( Other Place Card Month = Flipped Card Month)
-                            //카드들을 충돌 시키고 해당 플레이어 밑으로 가져온다.
-                                //if (Selected Card Month = Other Card Place Month = Flipped Card Month)
-                                    //뻑이요
-                        // if( Other Place Card Month != Flipped Card Month)
-                            //Flipped Card 를 Other Card Place 에 내려놓는다.
-               //if (Other Place Card Month != Selected Card Month)
-                    // Selected Card 를 Other Card Place 에 내려놓는다
-                        // if( Other Place Card Month = Flipped Card Month)
-                            // 카드들을 충돌 시키고 해당 플레이어 밑으로 가져온다,
-                        // if( Other Place Card Month != Flipped Card Month)
-                            // Flipped Card 를 Other Card Place 에 내려놓는다.
-
-        //이 실행을 하고 나면 턴이 종료되고 Player 2 에게 조종권이 넘어간다.
-
+            
         if (Player2CardSelected == true)
         {
             Debug.Log("No problem either");
@@ -124,10 +130,13 @@ public class UserInput : MonoBehaviour
             Player2CardSelected = !Player2CardSelected; 
         }
 
+        if (CardSelected == true)
+        {
+            CardSelected = !CardSelected;
+        }
+
+
     }
-
-
-
 
     void TurnCounter()
     {
@@ -180,24 +189,7 @@ public class UserInput : MonoBehaviour
 
     }
 
-    void CardCheck()
+    void Check()
     {
-        if (CardSelected == true)
-        {
-            int i = 0;
-            Selectable s1 = slot1.GetComponent<Selectable>();
-            foreach (int m in gostop.FloorCardsMonth)
-            {
-                if (m == s1.month)
-                {
-                    i++;
-                    print("Found it" + i);
-                }
-                else
-                {
-                    print("Not Found");
-                }
-            }
-        }
     }
 }
