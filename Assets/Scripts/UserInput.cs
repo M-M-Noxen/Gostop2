@@ -17,11 +17,15 @@ public class UserInput : MonoBehaviour
 
     public int PlayerTurn = 0;
 
+    private void Awake()
+    {
+        gostop = FindObjectOfType<GoStop>();
+        selectable = FindObjectOfType<Selectable>();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        gostop = FindObjectOfType<GoStop>();
         slot1 = this.gameObject;
     }
 
@@ -29,6 +33,7 @@ public class UserInput : MonoBehaviour
     void Update()
     {        
         GetMouseClick();
+        CardCheck();
         CardAction();
         TurnCounter();
     }
@@ -83,12 +88,15 @@ public class UserInput : MonoBehaviour
 
     void CardAction()
     {
-        if (CardSelected == true & Player1CardSelected == true)
+        if(CardSelected == true)
         {
+            CardSelected = !CardSelected;
+        }
 
+        if (Player1CardSelected == true)
+        {            
             Debug.Log("No problem");// 조건 실행문으로 교체
             PlayerTurn = 2;
-            CardSelected = !CardSelected;
             Player1CardSelected = !Player1CardSelected;
         }
             //카드가 선택되면 OtherPlace 중에서 월(month)을 비교해본다.
@@ -109,11 +117,10 @@ public class UserInput : MonoBehaviour
 
         //이 실행을 하고 나면 턴이 종료되고 Player 2 에게 조종권이 넘어간다.
 
-        if (CardSelected == true & Player2CardSelected == true)
+        if (Player2CardSelected == true)
         {
             Debug.Log("No problem either");
             PlayerTurn = 1;
-            CardSelected = !CardSelected;
             Player2CardSelected = !Player2CardSelected; 
         }
 
@@ -173,5 +180,24 @@ public class UserInput : MonoBehaviour
 
     }
 
-
+    void CardCheck()
+    {
+        if (CardSelected == true)
+        {
+            int i = 0;
+            Selectable s1 = slot1.GetComponent<Selectable>();
+            foreach (int m in gostop.FloorCardsMonth)
+            {
+                if (m == s1.month)
+                {
+                    i++;
+                    print("Found it" + i);
+                }
+                else
+                {
+                    print("Not Found");
+                }
+            }
+        }
+    }
 }

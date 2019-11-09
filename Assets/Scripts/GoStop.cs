@@ -5,16 +5,25 @@ using System.Linq;
 
 public class GoStop : MonoBehaviour
 {
+    private UserInput userinput;
+    private Selectable selectable;
+
     public Sprite[] cardFaces;
     public GameObject cardPrefabs;
     public GameObject[] Player1Place;
     public GameObject[] Player2Place;
-    public GameObject[] OtherPlace;
+    public GameObject[] FloorPlace;
+    //Scene Assets
 
-    public static string[] month = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" };
-    public static string[] value = new string[] { "a", "b", "c", "d", };
-    public List<string>[] PlayerCards;
-    public List<string>[] OtherCards;
+    public static string[] Month = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" };
+    public static string[] Value = new string[] { "a", "b", "c", "d", };
+    public static string[] Blank = new string[] { "", "", "", "" };
+    public List<string>[] Player1Cards;
+    public List<string>[] Player2Cards;
+    public List<string>[] FloorCards;
+    public List<int> Player1CardsMonth;
+    public List<int> Player2CardsMonth;
+    public List<int> FloorCardsMonth;
 
     private List<string> MyCard0 = new List<string>();
     private List<string> MyCard1 = new List<string>();
@@ -38,29 +47,37 @@ public class GoStop : MonoBehaviour
     private List<string> YourCard8 = new List<string>();
     private List<string> YourCard9 = new List<string>();
 
-    private List<string> OtherCard0 = new List<string>();
-    private List<string> OtherCard1 = new List<string>();
-    private List<string> OtherCard2 = new List<string>();
-    private List<string> OtherCard3 = new List<string>();
-    private List<string> OtherCard4 = new List<string>();
-    private List<string> OtherCard5 = new List<string>();
-    private List<string> OtherCard6 = new List<string>();
-    private List<string> OtherCard7 = new List<string>();
-    private List<string> OtherCard8 = new List<string>();
-    private List<string> OtherCard9 = new List<string>();
-    private List<string> OtherCard10 = new List<string>();
-    private List<string> OtherCard11 = new List<string>();
-
-
-
-
+    private List<string> FloorCard0 = new List<string>();
+    private List<string> FloorCard1 = new List<string>();
+    private List<string> FloorCard2 = new List<string>();
+    private List<string> FloorCard3 = new List<string>();
+    private List<string> FloorCard4 = new List<string>();
+    private List<string> FloorCard5 = new List<string>();
+    private List<string> FloorCard6 = new List<string>();
+    private List<string> FloorCard7 = new List<string>();
+    private List<string> FloorCard8 = new List<string>();
+    private List<string> FloorCard9 = new List<string>();
+    private List<string> FloorCard10 = new List<string>();
+    private List<string> FloorCard11 = new List<string>();
+    //Objects for generating deck
 
     public List<string> deck;
+    public List<int> monthdeck;
+
+    private void Awake()
+    {
+        userinput = FindObjectOfType<UserInput>();
+        selectable = FindObjectOfType<Selectable>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        PlayerCards = new List<string>[] { MyCard0, MyCard1, MyCard2, MyCard3, MyCard4, MyCard5, MyCard6, MyCard7, MyCard8, MyCard9, YourCard0, YourCard1, YourCard2, YourCard3, YourCard4, YourCard5, YourCard6, YourCard7, YourCard8, YourCard9};
-        OtherCards = new List<string>[] { OtherCard0, OtherCard1, OtherCard2, OtherCard3, OtherCard4, OtherCard5, OtherCard6, OtherCard7, OtherCard8, OtherCard9, OtherCard10, OtherCard11 };
+        Player1Cards = new List<string>[] { MyCard0, MyCard1, MyCard2, MyCard3, MyCard4, MyCard5, MyCard6, MyCard7, MyCard8, MyCard9};
+        Player2Cards = new List<string>[] { YourCard0, YourCard1, YourCard2, YourCard3, YourCard4, YourCard5, YourCard6, YourCard7, YourCard8, YourCard9 };
+       FloorCards = new List<string>[] { FloorCard0, FloorCard1, FloorCard2, FloorCard3, FloorCard4, FloorCard5, FloorCard6, FloorCard7, FloorCard8, FloorCard9, FloorCard10, FloorCard11 };
+        //PlayerCards = new List<string>[] { "MyCard0", "MyCard1", "MyCard2", "MyCard3", "MyCard4", "MyCard5", "MyCard6", "MyCard7", "MyCard8", "MyCard9", "YourCard0", "YourCard1", "YourCard2", "YourCard3", "YourCard4", "YourCard5", "YourCard6", "YourCard7", "YourCard8", "YourCard9"};
+        //->foreach 구문과 List<string>[] 의 관계, 왜 List 와 Array 로는 안되는지 생각해보자
 
         PlayCards();
     }
@@ -68,7 +85,7 @@ public class GoStop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     public void PlayCards()
@@ -76,25 +93,52 @@ public class GoStop : MonoBehaviour
         deck = GenerateDeck();
         Shuffle(deck);
 
-        foreach (string card in deck)
+        monthdeck = GenerateMonthDeck();
+        Shuffle(monthdeck);
+        /*foreach (string card in deck)
         {
             print(card);
         }
+        foreach (string card2 in monthdeck)
+        {
+            print(card2);
+        }*/
         GoStopSort();
+        GoStopMonthSort();
         GoStopDeal();
     }
 
     public static List<string> GenerateDeck()
     {
+
         List<string> newDeck = new List<string>();
-        foreach (string m in month)
+        foreach (string m in Month)
         {
-            foreach (string v in value)
+            foreach (string v in Value)
             {
                 newDeck.Add(v + m);
             }
         }
         return newDeck;
+    }
+
+    public static List<int> GenerateMonthDeck()
+    {
+        List<string> newMonthDeck = new List<string>();
+        List<int> TrueMonthDeck = new List<int>();
+        foreach (string m in Month)
+        {
+            foreach (string b in Blank)
+            {
+                newMonthDeck.Add(b + m);
+            }
+        }
+        foreach (string s in newMonthDeck)
+        {
+            int Month_int = int.Parse(s);
+            TrueMonthDeck.Add(Month_int);
+        }
+        return TrueMonthDeck;
 
     }
 
@@ -131,13 +175,13 @@ public class GoStop : MonoBehaviour
             zOffset = zOffset + 0.03f;
         }
 
-        for (int i = 0; i < 28; i++)
+        for (int i = 0; i < 20; i++)
         {
 
             if (i < 10)
             {
 
-                foreach (string card in PlayerCards[i])
+                foreach (string card in Player1Cards[i])
                 {
                     GameObject newCard = Instantiate(cardPrefabs, new Vector3(Player1Place[i].transform.position.x, Player1Place[i].transform.position.y, Player1Place[i].transform.position.z ), Quaternion.identity, Player1Place[i].transform);
                     newCard.name = card;
@@ -147,7 +191,7 @@ public class GoStop : MonoBehaviour
             }
             else if(i>=10 && i<20)
             {
-                foreach (string card in PlayerCards[i])
+                foreach (string card in Player2Cards[i-10])
                 {
                     GameObject newCard = Instantiate(cardPrefabs, new Vector3(Player2Place[i-10].transform.position.x, Player2Place[i-10].transform.position.y, Player2Place[i-10].transform.position.z ), Quaternion.identity, Player2Place[i-10].transform);
                     newCard.name = card;
@@ -158,28 +202,67 @@ public class GoStop : MonoBehaviour
         }
         for(int i=0; i<8; i++)
         {
-            foreach (string card in OtherCards[i])
+            foreach (string card in FloorCards[i])
             {
-                GameObject newCard = Instantiate(cardPrefabs, new Vector3(OtherPlace[i].transform.position.x, OtherPlace[i].transform.position.y, OtherPlace[i].transform.position.z), Quaternion.identity, OtherPlace[i].transform);
+                GameObject newCard = Instantiate(cardPrefabs, new Vector3(FloorPlace[i].transform.position.x, FloorPlace[i].transform.position.y, FloorPlace[i].transform.position.z), Quaternion.identity, FloorPlace[i].transform);
                 newCard.name = card;
-                newCard.GetComponent<Selectable>().faceUp = true;
+                newCard.GetComponent<Selectable>().faceUp = true;               
             }
         }
+
     }
 
     void GoStopSort()
     {
-        for(int i =0; i<20; i++)
+        for (int i = 0; i < 10; i++)
         {
-                PlayerCards[i].Add(deck.Last<string>());
-                deck.RemoveAt(deck.Count - 1);
+            Player1Cards[i].Add(deck.Last<string>());
+            deck.RemoveAt(deck.Count - 1);
+
+        }
+        for (int i = 0; i < 10; i++)
+        {
+            Player2Cards[i].Add(deck.Last<string>());
+            deck.RemoveAt(deck.Count - 1);
 
         }
 
-        for(int i=0; i<8; i++)
+        for (int i = 0; i < 8; i++)
         {
-            OtherCards[i].Add(deck.Last<string>());
+            FloorCards[i].Add(deck.Last<string>());
             deck.RemoveAt(deck.Count - 1);
+
         }
     }
+
+    void GoStopMonthSort()
+    {
+
+        for (int i = 0; i < 10; i++)
+        {            
+            Player1CardsMonth.Add(monthdeck.Last<int>());
+            monthdeck.RemoveAt(monthdeck.Count - 1);
+        }
+        for (int i = 0; i < 10; i++)
+        {
+            Player2CardsMonth.Add(monthdeck.Last<int>());
+            monthdeck.RemoveAt(monthdeck.Count - 1);
+        }
+
+        for (int i = 0; i < 8; i++)
+        {
+            FloorCardsMonth.Add(monthdeck.Last<int>());
+            monthdeck.RemoveAt(monthdeck.Count - 1);
+        }
+    }
+
+    void Check()
+    {
+        foreach (int m in Player1CardsMonth)
+        {
+            print("Check: " + m);
+        }
+        print("Check2; " + monthdeck.Last<int>());
+    }
+
 }

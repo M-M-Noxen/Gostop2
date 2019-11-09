@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Selectable : MonoBehaviour
 {
+    private GoStop gostop;
+
     public bool faceUp = false;
 
     public string value;
@@ -13,6 +15,11 @@ public class Selectable : MonoBehaviour
 
 
     // Start is called before the first frame update
+    private void Awake()
+    {
+        gostop = FindObjectOfType<GoStop>();
+    }
+
     void Start()
     {
         if (CompareTag("Card"))
@@ -80,4 +87,5 @@ public class Selectable : MonoBehaviour
     {
         
     }
+    
 }

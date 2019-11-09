@@ -851,7 +851,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0.5188679, b: 0.11579144, a: 0}
+  m_BackGroundColor: {r: 0, g: 0.5176471, b: 0.026450047, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -3851,7 +3851,7 @@ MonoBehaviour:
   - {fileID: 1959949835}
   - {fileID: 1125954944}
   - {fileID: 2023675131}
-  OtherPlace:
+  FloorPlace:
   - {fileID: 40137285}
   - {fileID: 1358211812}
   - {fileID: 756032865}
@@ -3864,7 +3864,11 @@ MonoBehaviour:
   - {fileID: 62753661}
   - {fileID: 1593617380}
   - {fileID: 1064959997}
+  Player1CardsMonth: 
+  Player2CardsMonth: 
+  FloorCardsMonth: 
   deck: []
+  monthdeck: 
 --- !u!4 &1703499738
 Transform:
   m_ObjectHideFlags: 0
