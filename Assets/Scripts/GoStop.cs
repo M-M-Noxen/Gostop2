@@ -73,7 +73,7 @@ public class GoStop : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Player1Cards = new List<string>[] { MyCard0, MyCard1, MyCard2, MyCard3, MyCard4, MyCard5, MyCard6, MyCard7, MyCard8, MyCard9};
+        Player1Cards = new List<string>[] { MyCard0, MyCard1, MyCard2, MyCard3, MyCard4, MyCard5, MyCard6, MyCard7, MyCard8, MyCard9 };
         Player2Cards = new List<string>[] { YourCard0, YourCard1, YourCard2, YourCard3, YourCard4, YourCard5, YourCard6, YourCard7, YourCard8, YourCard9 };
         FloorCards = new List<string>[] { FloorCard0, FloorCard1, FloorCard2, FloorCard3, FloorCard4, FloorCard5, FloorCard6, FloorCard7, FloorCard8, FloorCard9, FloorCard10, FloorCard11 };
         //PlayerCards = new List<string>[] { "MyCard0", "MyCard1", "MyCard2", "MyCard3", "MyCard4", "MyCard5", "MyCard6", "MyCard7", "MyCard8", "MyCard9", "YourCard0", "YourCard1", "YourCard2", "YourCard3", "YourCard4", "YourCard5", "YourCard6", "YourCard7", "YourCard8", "YourCard9"};
@@ -86,7 +86,7 @@ public class GoStop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void PlayCards()
@@ -106,7 +106,7 @@ public class GoStop : MonoBehaviour
         }*/
         GoStopSort();
         GoStopMonthSort();
-        GoStopDeal();
+        StartCoroutine(GoStopDeal());
     }
 
     public static List<string> GenerateDeck()
@@ -161,14 +161,14 @@ public class GoStop : MonoBehaviour
             //Debug.Log("k=" + k);
 
         }
-        
+
     }
 
-    void GoStopDeal()
+    IEnumerator GoStopDeal()
     {
         float zOffset = 0.03f;
 
-        foreach(string card in deck)
+        foreach (string card in deck)
         {
             GameObject newCard = Instantiate(cardPrefabs, new Vector3(transform.position.x, transform.position.y, transform.position.z + zOffset), Quaternion.identity);
             newCard.name = card;
@@ -176,39 +176,49 @@ public class GoStop : MonoBehaviour
             zOffset = zOffset + 0.03f;
         }
 
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 28; i++)
         {
-
-            if (i < 10)
+            if (i <10)
             {
-
                 foreach (string card in Player1Cards[i])
                 {
-                    GameObject newCard = Instantiate(cardPrefabs, new Vector3(Player1Place[i].transform.position.x, Player1Place[i].transform.position.y, Player1Place[i].transform.position.z ), Quaternion.identity, Player1Place[i].transform);
+                    yield return new WaitForSeconds(0.03f);
+                    GameObject newCard = Instantiate(cardPrefabs, new Vector3(Player1Place[i].transform.position.x, Player1Place[i].transform.position.y, Player1Place[i].transform.position.z), Quaternion.identity, Player1Place[i].transform);
                     newCard.name = card;
-                    newCard.GetComponent<Selectable>().faceUp = true;
+                    if (card == Player1Cards[i][Player1Cards[i].Count - 1])
+                    {
+                        newCard.GetComponent<Selectable>().faceUp = true;
+                    }
                 }
 
             }
-            else if(i>=10 && i<20)
+            else if (i >= 10 && i < 20)
             {
-                foreach (string card in Player2Cards[i-10])
+                foreach (string card in Player2Cards[i - 10])
                 {
-                    GameObject newCard = Instantiate(cardPrefabs, new Vector3(Player2Place[i-10].transform.position.x, Player2Place[i-10].transform.position.y, Player2Place[i-10].transform.position.z ), Quaternion.identity, Player2Place[i-10].transform);
+                    yield return new WaitForSeconds(0.03f);
+                    GameObject newCard = Instantiate(cardPrefabs, new Vector3(Player2Place[i - 10].transform.position.x, Player2Place[i - 10].transform.position.y, Player2Place[i - 10].transform.position.z), Quaternion.identity, Player2Place[i - 10].transform);
                     newCard.name = card;
-                    newCard.GetComponent<Selectable>().faceUp = true;
+                    if (card == Player2Cards[i - 10][Player2Cards[i - 10].Count - 1])
+                    {
+                        newCard.GetComponent<Selectable>().faceUp = true;
+                    }
                 }
             }
-        //Debug.Log("i=" + i);
-        }
-        for(int i=0; i<8; i++)
-        {
-            foreach (string card in FloorCards[i])
+            if(i>=20&& i<28)
             {
-                GameObject newCard = Instantiate(cardPrefabs, new Vector3(FloorPlace[i].transform.position.x, FloorPlace[i].transform.position.y, FloorPlace[i].transform.position.z), Quaternion.identity, FloorPlace[i].transform);
-                newCard.name = card;
-                newCard.GetComponent<Selectable>().faceUp = true;               
+                foreach (string card in FloorCards[i-20])
+                {
+                    yield return new WaitForSeconds(0.03f);
+                    GameObject newCard = Instantiate(cardPrefabs, new Vector3(FloorPlace[i-20].transform.position.x, FloorPlace[i-20].transform.position.y, FloorPlace[i-20].transform.position.z), Quaternion.identity, FloorPlace[i-20].transform);
+                    newCard.name = card;
+                    if (card == FloorCards[i-20][FloorCards[i-20].Count - 1])
+                    {
+                        newCard.GetComponent<Selectable>().faceUp = true;
+                    }
+                }
             }
+            //Debug.Log("i=" + i);
         }
 
     }
@@ -240,7 +250,7 @@ public class GoStop : MonoBehaviour
     {
 
         for (int i = 0; i < 10; i++)
-        {            
+        {
             Player1CardsMonth.Add(monthdeck.Last<int>());
             monthdeck.RemoveAt(monthdeck.Count - 1);
         }
