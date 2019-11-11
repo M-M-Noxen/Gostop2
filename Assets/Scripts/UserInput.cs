@@ -27,14 +27,14 @@ public class UserInput : MonoBehaviour
     void Start()
     {
         slot1 = this.gameObject;
-        Check();
+        //Check();
     }
 
     // Update is called once per frame
     void Update()
-    {        
+    {
         GetMouseClick();
-        Check();
+        //Check();
         CardAction();
         TurnCounter();
     }
@@ -44,34 +44,34 @@ public class UserInput : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -10));
-            hits  = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), transform.forward, Mathf.Infinity);
+            hits = Physics2D.RaycastAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), transform.forward, Mathf.Infinity);
 
             for (int i = 0; i < hits.Length; i++)
             {
                 RaycastHit2D hit = hits[i];
-                
+
                 if (hit)
                 {
-                        if (hit.collider.CompareTag("Card") )
-                        {
-                            Debug.Log("Clicked on Card");
-                            Card(hit.collider.gameObject);
-                            CardSelected = true;                          
-                        }
+                    if (hit.collider.CompareTag("Card"))
+                    {
+                        Debug.Log("Clicked on Card");
+                        Card(hit.collider.gameObject);
+                        CardSelected = true;
+                    }
 
-                        if (hit.collider.CompareTag("CardPlacePlayer1"))
-                        {
-                            Debug.Log("Clicked on Player1");
-                            Player1CardSelected = true;
-                        }
+                    if (hit.collider.CompareTag("CardPlacePlayer1"))
+                    {
+                        Debug.Log("Clicked on Player1");
+                        Player1CardSelected = true;
+                    }
 
 
-                        if (hit.collider.CompareTag("CardPlacePlayer2"))
-                        {
-                            Debug.Log("Clicked on Player 2");
-                            Player2CardSelected = true;
-                        }
-                   
+                    if (hit.collider.CompareTag("CardPlacePlayer2"))
+                    {
+                        Debug.Log("Clicked on Player 2");
+                        Player2CardSelected = true;
+                    }
+
                 }
 
             }
@@ -81,9 +81,9 @@ public class UserInput : MonoBehaviour
 
     void Card(GameObject selected)
     {
-        if(slot1 = this.gameObject)
+        if (slot1 = this.gameObject)
         {
-            slot1 = selected; 
+            slot1 = selected;
         }
     }
 
@@ -91,43 +91,17 @@ public class UserInput : MonoBehaviour
     {
         if (Player1CardSelected == true)
         {
-            if (CardSelected == true)
-            {
-                int MonthCount = 0;
-                int MonthPlace = 0;
-                Selectable s1 = slot1.GetComponent<Selectable>();
-                GameObject[] FloorPlaceUserinput = gostop.FloorPlace;
-                
-                foreach (int m in gostop.FloorCardsMonth)
-                {
-                    if (s1.month == m)
-                    {
-                        MonthCount++;
-                        if (MonthCount >= 2)
-                        {
-                            print("What will you choose?");
-                        }
-                        slot1.transform.position = new Vector3(FloorPlaceUserinput[MonthPlace].transform.position.x + 1f, FloorPlaceUserinput[MonthPlace].transform.position.y, FloorPlaceUserinput[MonthPlace].transform.position.z + 0.5f);
-                        //print("You have " + MonthCount + " " + m + "Month");
-                    }
-                    else
-                    {
-                        //print("Not Found");
-                    }
-
-                    MonthPlace++;
-                }
-            }
+            CardRule();
             Debug.Log("No problem");// 조건 실행문으로 교체
             PlayerTurn = 2;
             Player1CardSelected = !Player1CardSelected;
         }
-            
+
         if (Player2CardSelected == true)
         {
             Debug.Log("No problem either");
             PlayerTurn = 1;
-            Player2CardSelected = !Player2CardSelected; 
+            Player2CardSelected = !Player2CardSelected;
         }
 
         if (CardSelected == true)
@@ -174,22 +148,129 @@ public class UserInput : MonoBehaviour
 
         else if (PlayerTurn == 2)
         {
-                foreach (GameObject CardTag in TagFinderTemp2)
-                {
-                    CardTag.gameObject.tag = "CardPlacePlayer2";
-                    //print("Cartag3:" + CardTag3);
-                }
-                foreach (GameObject CardTag in TagFinder1)
-                {
-                    CardTag.gameObject.tag = "NotSelectable1";
-                    //print("Cartag4:" + CardTag4.tag);                   
-                }                
-                //Player2 차례           
+            foreach (GameObject CardTag in TagFinderTemp2)
+            {
+                CardTag.gameObject.tag = "CardPlacePlayer2";
+                //print("Cartag3:" + CardTag3);
+            }
+            foreach (GameObject CardTag in TagFinder1)
+            {
+                CardTag.gameObject.tag = "NotSelectable1";
+                //print("Cartag4:" + CardTag4.tag);                   
+            }
+            //Player2 차례           
         }
 
     }
 
+    void CardRule()
+    {
+        if (CardSelected == true)
+        {
+            int MonthPlace = 0;
+            List<int> MonthtempNum = new List<int>();
+            List<int> MonthtempPlace = new List<int>();
+            Selectable s1 = slot1.GetComponent<Selectable>();
+            GameObject[] FloorPlaceUserinput = gostop.FloorPlace;
+
+            foreach (int m in gostop.FloorCardsMonth)
+            {
+                if (m == s1.month) 
+                {
+                    MonthtempNum.Add(m);
+                    MonthtempPlace.Add(MonthPlace);
+                }
+                MonthPlace++;
+            }
+            //깔린카드 검사 -> MonthtempNum에 일치하는 month를, MonthtempPlace 에 month의 위치를
+            if (MonthtempNum.Count == 0)
+            {
+                //일치하는 카드가 없다면
+                gostop.FloorCards.Add(slot1.name);
+                gostop.FloorCardsMonth.Add(s1.month);
+                //선택한 카드를 장판 패 List에 추가
+                string[] tempArr = gostop.FloorCards.ToArray();
+                int temp = 0;
+                foreach(string m in tempArr)
+                {
+                    if(m == slot1.name)
+                    {
+                        slot1.transform.position = new Vector3(gostop.FloorPlace[temp].transform.position.x, gostop.FloorPlace[temp].transform.position.y, gostop.FloorPlace[temp].transform.position.z);
+                        gostop.Player1Cards.Remove(m);
+                        gostop.Player1CardsMonth.Remove(s1.month);
+                        //임의의 리스트(tempArr) 안에서 몇번째(temp)에 속하는지 찾아서 카드 배치(transformposition)
+                        //이후 손패에서 제거(Remove)
+                    }
+                    temp++;
+                }
+                FlipCard();
+                MonthtempNum.Clear();
+                MonthtempPlace.Clear();
+                //다음 시행을 위해 List 초기화(Clear)
+            }
+
+            if (MonthtempNum.Count == 1)
+            {
+                /*slot1.transform.position = new Vector3(FloorPlaceUserinput[MonthtempPlace[0]].transform.position.x + 1f, FloorPlaceUserinput[MonthtempPlace[0]].transform.position.y, FloorPlaceUserinput[MonthtempPlace[0]].transform.position.z + 0.5f);
+                deckUserinput.RemoveAt(deckUserinput.Count - 1);
+                GameObject newCard = Instantiate(cardPrefabs, new Vector3(FloorPlace[i - 20].transform.position.x, FloorPlace[i - 20].transform.position.y, FloorPlace[i - 20].transform.position.z), Quaternion.identity, FloorPlace[i - 20].transform);
+                newCard.name = card;
+                newCard.GetComponent<Selectable>().faceUp = true;*/
+                
+            }
+
+            /*if (Monthtemp.Count == 2)
+            {
+                //UI Canvas 활성화 -> 2개의 버튼으로 구성, List 에 있는 카드들을 불러온다 -> 선택 -> 그 카드를 다시 함수에 반환,이동
+                slot1.transform.position = new Vector3(FloorPlaceUserinput[Monthtemp[0]].transform.position.x + 1f, FloorPlaceUserinput[Monthtemp[0]].transform.position.y, FloorPlaceUserinput[Monthtemp[0]].transform.position.z + 0.5f);
+            }*/
+        }
+    }
+
+    void FlipCard()
+    {
+        int MonthPlace = 0;
+        List<int> Reserve_Month_After_Flip = new List<int>();
+        List<int> Reserve_Place_After_Flip = new List<int>();
+        //덱에서 꺼낸 카드(deck.Peek())를 장판 패에 비교(if문)
+            //같을 경우 월과 장소를 List에 저장
+        foreach (int k in gostop.FloorCardsMonth)
+        {
+            if(k == gostop.monthdeck.Peek())
+            {
+                Reserve_Month_After_Flip.Add(k);
+                Reserve_Place_After_Flip.Add(MonthPlace);
+            }
+
+            MonthPlace++;
+        }
+        if(Reserve_Month_After_Flip.Count == 0)
+        {
+            //뒤집었는데 같은 카드가 없는 경우
+            string tempsave = gostop.deck.Peek();
+            int tempPlace = 0;
+            gostop.FloorCardsMonth.Add(gostop.monthdeck.Pop());
+            gostop.FloorCards.Add(gostop.deck.Pop());
+            //덱에 있던 카드를 장판 패에 추가
+
+            foreach (string m in gostop.FloorCards)
+            {
+                if(m == tempsave)
+                {
+                    GameObject newCard = Instantiate(gostop.cardPrefabs, new Vector3(gostop.FloorPlace[tempPlace].transform.position.x, gostop.FloorPlace[tempPlace].transform.position.y, transform.position.z), Quaternion.identity, gostop.FloorPlace[tempPlace].transform);
+                    newCard.name = gostop.FloorCards[tempPlace];
+                    newCard.GetComponent<Selectable>().faceUp = true;
+                }
+                tempPlace++;
+            }
+            Reserve_Month_After_Flip.Clear();
+            Reserve_Place_After_Flip.Clear();
+            //몇번쨰에 추가 됐는지 확인(tempPlace),배치(Instantiate)
+        }
+    }
+
     void Check()
     {
+
     }
 }

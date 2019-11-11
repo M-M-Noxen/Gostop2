@@ -14,55 +14,19 @@ public class GoStop : MonoBehaviour
     public GameObject[] Player2Place;
     public GameObject[] FloorPlace;
     //Scene Assets
-
     public static string[] Month = new string[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" };
     public static string[] Value = new string[] { "a", "b", "c", "d", };
     public static string[] Blank = new string[] { "", "", "", "" };
-    public List<string>[] Player1Cards;
-    public List<string>[] Player2Cards;
-    public List<string>[] FloorCards;
+    public List<string> Player1Cards;
+    public List<string> Player2Cards;
+    public List<string> FloorCards;
     public List<int> Player1CardsMonth;
     public List<int> Player2CardsMonth;
     public List<int> FloorCardsMonth;
+    //Scene Variables
 
-    private List<string> MyCard0 = new List<string>();
-    private List<string> MyCard1 = new List<string>();
-    private List<string> MyCard2 = new List<string>();
-    private List<string> MyCard3 = new List<string>();
-    private List<string> MyCard4 = new List<string>();
-    private List<string> MyCard5 = new List<string>();
-    private List<string> MyCard6 = new List<string>();
-    private List<string> MyCard7 = new List<string>();
-    private List<string> MyCard8 = new List<string>();
-    private List<string> MyCard9 = new List<string>();
-
-    private List<string> YourCard0 = new List<string>();
-    private List<string> YourCard1 = new List<string>();
-    private List<string> YourCard2 = new List<string>();
-    private List<string> YourCard3 = new List<string>();
-    private List<string> YourCard4 = new List<string>();
-    private List<string> YourCard5 = new List<string>();
-    private List<string> YourCard6 = new List<string>();
-    private List<string> YourCard7 = new List<string>();
-    private List<string> YourCard8 = new List<string>();
-    private List<string> YourCard9 = new List<string>();
-
-    private List<string> FloorCard0 = new List<string>();
-    private List<string> FloorCard1 = new List<string>();
-    private List<string> FloorCard2 = new List<string>();
-    private List<string> FloorCard3 = new List<string>();
-    private List<string> FloorCard4 = new List<string>();
-    private List<string> FloorCard5 = new List<string>();
-    private List<string> FloorCard6 = new List<string>();
-    private List<string> FloorCard7 = new List<string>();
-    private List<string> FloorCard8 = new List<string>();
-    private List<string> FloorCard9 = new List<string>();
-    private List<string> FloorCard10 = new List<string>();
-    private List<string> FloorCard11 = new List<string>();
-    //Objects for generating deck
-
-    public List<string> deck;
-    public List<int> monthdeck;
+    public Stack<string> deck;
+    public Stack<int> monthdeck;
 
     private void Awake()
     {
@@ -73,12 +37,6 @@ public class GoStop : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Player1Cards = new List<string>[] { MyCard0, MyCard1, MyCard2, MyCard3, MyCard4, MyCard5, MyCard6, MyCard7, MyCard8, MyCard9 };
-        Player2Cards = new List<string>[] { YourCard0, YourCard1, YourCard2, YourCard3, YourCard4, YourCard5, YourCard6, YourCard7, YourCard8, YourCard9 };
-        FloorCards = new List<string>[] { FloorCard0, FloorCard1, FloorCard2, FloorCard3, FloorCard4, FloorCard5, FloorCard6, FloorCard7, FloorCard8, FloorCard9, FloorCard10, FloorCard11 };
-        //PlayerCards = new List<string>[] { "MyCard0", "MyCard1", "MyCard2", "MyCard3", "MyCard4", "MyCard5", "MyCard6", "MyCard7", "MyCard8", "MyCard9", "YourCard0", "YourCard1", "YourCard2", "YourCard3", "YourCard4", "YourCard5", "YourCard6", "YourCard7", "YourCard8", "YourCard9"};
-        //->foreach 구문과 List<string>[] 의 관계, 왜 List 와 Array 로는 안되는지 생각해보자
-
         PlayCards();
         Check();
     }
@@ -91,19 +49,14 @@ public class GoStop : MonoBehaviour
 
     public void PlayCards()
     {
-        deck = GenerateDeck();
-        Shuffle(deck);
+        List<string> deck1 = GenerateDeck();
+        Shuffle(deck1);
+        deck = new Stack<string>(deck1);
 
-        monthdeck = GenerateMonthDeck();
-        Shuffle(monthdeck);
-        /*foreach (string card in deck)
-        {
-            print(card);
-        }
-        foreach (string card2 in monthdeck)
-        {
-            print(card2);
-        }*/
+        List<int> monthdeck1 = GenerateMonthDeck();
+        Shuffle(monthdeck1);
+        monthdeck = new Stack<int>(monthdeck1);
+
         GoStopSort();
         GoStopMonthSort();
         StartCoroutine(GoStopDeal());
@@ -161,9 +114,7 @@ public class GoStop : MonoBehaviour
             //Debug.Log("k=" + k);
 
         }
-
     }
-
     IEnumerator GoStopDeal()
     {
         float zOffset = 0.03f;
@@ -178,45 +129,27 @@ public class GoStop : MonoBehaviour
 
         for (int i = 0; i < 28; i++)
         {
-            if (i <10)
+            if (i < 10)
             {
-                foreach (string card in Player1Cards[i])
-                {
-                    yield return new WaitForSeconds(0.03f);
-                    GameObject newCard = Instantiate(cardPrefabs, new Vector3(Player1Place[i].transform.position.x, Player1Place[i].transform.position.y, Player1Place[i].transform.position.z), Quaternion.identity, Player1Place[i].transform);
-                    newCard.name = card;
-                    if (card == Player1Cards[i][Player1Cards[i].Count - 1])
-                    {
-                        newCard.GetComponent<Selectable>().faceUp = true;
-                    }
-                }
-
+                yield return new WaitForSeconds(0.03f);
+                GameObject newCard = Instantiate(cardPrefabs, new Vector3(Player1Place[i].transform.position.x, Player1Place[i].transform.position.y, Player1Place[i].transform.position.z), Quaternion.identity, Player1Place[i].transform);
+                newCard.name = Player1Cards[i];
+                newCard.GetComponent<Selectable>().faceUp = true;
             }
             else if (i >= 10 && i < 20)
             {
-                foreach (string card in Player2Cards[i - 10])
-                {
-                    yield return new WaitForSeconds(0.03f);
-                    GameObject newCard = Instantiate(cardPrefabs, new Vector3(Player2Place[i - 10].transform.position.x, Player2Place[i - 10].transform.position.y, Player2Place[i - 10].transform.position.z), Quaternion.identity, Player2Place[i - 10].transform);
-                    newCard.name = card;
-                    if (card == Player2Cards[i - 10][Player2Cards[i - 10].Count - 1])
-                    {
-                        newCard.GetComponent<Selectable>().faceUp = true;
-                    }
-                }
+                yield return new WaitForSeconds(0.03f);
+                GameObject newCard = Instantiate(cardPrefabs, new Vector3(Player2Place[i - 10].transform.position.x, Player2Place[i - 10].transform.position.y, Player2Place[i - 10].transform.position.z), Quaternion.identity, Player2Place[i - 10].transform);
+                newCard.name = Player2Cards[i - 10];
+                newCard.GetComponent<Selectable>().faceUp = true;
             }
-            if(i>=20&& i<28)
+
+            if (i >= 20 && i < 28)
             {
-                foreach (string card in FloorCards[i-20])
-                {
-                    yield return new WaitForSeconds(0.03f);
-                    GameObject newCard = Instantiate(cardPrefabs, new Vector3(FloorPlace[i-20].transform.position.x, FloorPlace[i-20].transform.position.y, FloorPlace[i-20].transform.position.z), Quaternion.identity, FloorPlace[i-20].transform);
-                    newCard.name = card;
-                    if (card == FloorCards[i-20][FloorCards[i-20].Count - 1])
-                    {
-                        newCard.GetComponent<Selectable>().faceUp = true;
-                    }
-                }
+                yield return new WaitForSeconds(0.03f);
+                GameObject newCard = Instantiate(cardPrefabs, new Vector3(FloorPlace[i - 20].transform.position.x, FloorPlace[i - 20].transform.position.y, FloorPlace[i - 20].transform.position.z), Quaternion.identity, FloorPlace[i - 20].transform);
+                newCard.name = FloorCards[i - 20];
+                newCard.GetComponent<Selectable>().faceUp = true;
             }
             //Debug.Log("i=" + i);
         }
@@ -225,54 +158,105 @@ public class GoStop : MonoBehaviour
 
     void GoStopSort()
     {
+        List<string> templist = new List<string>();
+
         for (int i = 0; i < 10; i++)
         {
-            Player1Cards[i].Add(deck.Last<string>());
-            deck.RemoveAt(deck.Count - 1);
-
+            Player1Cards.Add(deck.Pop());
         }
         for (int i = 0; i < 10; i++)
         {
-            Player2Cards[i].Add(deck.Last<string>());
-            deck.RemoveAt(deck.Count - 1);
-
+            Player2Cards.Add(deck.Pop());
         }
-
         for (int i = 0; i < 8; i++)
         {
-            FloorCards[i].Add(deck.Last<string>());
-            deck.RemoveAt(deck.Count - 1);
-
+            FloorCards.Add(deck.Pop());
         }
+        //FloorCards = new Stack<string>(templist);
     }
 
     void GoStopMonthSort()
-    {
-
-        for (int i = 0; i < 10; i++)
+    { 
+        for (int i = 0; i < 28; i++)
         {
-            Player1CardsMonth.Add(monthdeck.Last<int>());
-            monthdeck.RemoveAt(monthdeck.Count - 1);
-        }
-        for (int i = 0; i < 10; i++)
-        {
-            Player2CardsMonth.Add(monthdeck.Last<int>());
-            monthdeck.RemoveAt(monthdeck.Count - 1);
-        }
-
-        for (int i = 0; i < 8; i++)
-        {
-            FloorCardsMonth.Add(monthdeck.Last<int>());
-            monthdeck.RemoveAt(monthdeck.Count - 1);
+            if (i < 10)
+            {
+                Player1CardsMonth.Add(monthdeck.Pop());
+            }
+            if (i >= 10 && i < 20)
+            {
+                Player2CardsMonth.Add(monthdeck.Pop());
+            }
+            if (i >= 20)
+            {
+                FloorCardsMonth.Add(monthdeck.Pop());
+            }
         }
     }
 
     void Check()
     {
-        foreach (int m in FloorCardsMonth)
+        Stack<int> PopPop = new Stack<int>();
+        for (int i = 0; i < 10; i++)
         {
-            print("Check: " + m);
+            PopPop.Push(i);
+        }
+
+        List<int> Check = new List<int>();
+        for (int i = 0; i < 10; i++)
+        {
+            Check.Add(i);
+        }
+
+        if (PopPop.Peek() == Check[9])
+        {
+            print("Check is " + Check[9]);
+            print("Will Pop in if delete the number?" + PopPop.Pop());
+            print("Will Pop in print delete the number?" + PopPop.Pop());
         }
     }
+
+    /*List Save
+     *private List<string> MyCard0 = new List<string>();
+    private List<string> MyCard1 = new List<string>();
+    private List<string> MyCard2 = new List<string>();
+    private List<string> MyCard3 = new List<string>();
+    private List<string> MyCard4 = new List<string>();
+    private List<string> MyCard5 = new List<string>();
+    private List<string> MyCard6 = new List<string>();
+    private List<string> MyCard7 = new List<string>();
+    private List<string> MyCard8 = new List<string>();
+    private List<string> MyCard9 = new List<string>();
+
+    private List<string> YourCard0 = new List<string>();
+    private List<string> YourCard1 = new List<string>();
+    private List<string> YourCard2 = new List<string>();
+    private List<string> YourCard3 = new List<string>();
+    private List<string> YourCard4 = new List<string>();
+    private List<string> YourCard5 = new List<string>();
+    private List<string> YourCard6 = new List<string>();
+    private List<string> YourCard7 = new List<string>();
+    private List<string> YourCard8 = new List<string>();
+    private List<string> YourCard9 = new List<string>();
+
+    private List<string> FloorCard0 = new List<string>();
+    private List<string> FloorCard1 = new List<string>();
+    private List<string> FloorCard2 = new List<string>();
+    private List<string> FloorCard3 = new List<string>();
+    private List<string> FloorCard4 = new List<string>();
+    private List<string> FloorCard5 = new List<string>();
+    private List<string> FloorCard6 = new List<string>();
+    private List<string> FloorCard7 = new List<string>();
+    private List<string> FloorCard8 = new List<string>();
+    private List<string> FloorCard9 = new List<string>();
+    private List<string> FloorCard10 = new List<string>();
+    private List<string> FloorCard11 = new List<string>();
+    //Objects for generating deck
+    
+    //Player1Cards = new List<string>[] { MyCard0, MyCard1, MyCard2, MyCard3, MyCard4, MyCard5, MyCard6, MyCard7, MyCard8, MyCard9 };
+        Player2Cards = new List<string>[] { YourCard0, YourCard1, YourCard2, YourCard3, YourCard4, YourCard5, YourCard6, YourCard7, YourCard8, YourCard9 };
+        FloorCards = new List<string>[] { FloorCard0, FloorCard1, FloorCard2, FloorCard3, FloorCard4, FloorCard5, FloorCard6, FloorCard7, FloorCard8, FloorCard9, FloorCard10, FloorCard11 };
+        //Player1Cards = new string[] { "MyCard0", "MyCard1", "MyCard2", "MyCard3", "MyCard4", "MyCard5", "MyCard6", "MyCard7", "MyCard8", "MyCard9"};
+        */
 
 }
